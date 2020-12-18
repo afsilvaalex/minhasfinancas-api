@@ -1,7 +1,13 @@
 package br.com.afsilva.minhasfinancas.controllers;
 
+import java.math.BigDecimal;
+import java.security.cert.PKIXRevocationChecker.Option;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +17,7 @@ import br.com.afsilva.minhasfinancas.api.dto.UsuarioDTO;
 import br.com.afsilva.minhasfinancas.exception.ErroAutenticacao;
 import br.com.afsilva.minhasfinancas.exception.RegraNegocioException;
 import br.com.afsilva.minhasfinancas.model.entity.Usuario;
+import br.com.afsilva.minhasfinancas.service.LancamentoService;
 import br.com.afsilva.minhasfinancas.service.UsuarioService;
 
 @RestController
@@ -18,10 +25,12 @@ import br.com.afsilva.minhasfinancas.service.UsuarioService;
 public class UsuarioController {
 	
 	private UsuarioService service;
+	private LancamentoService lancamentoService;
 	
-	public UsuarioController(UsuarioService service) {
+	public UsuarioController(UsuarioService service, LancamentoService lancamentoService) {
 		
 		this.service = service;
+		this.lancamentoService = lancamentoService;
 	}
 	
 	@PostMapping("/autenticar")
@@ -50,6 +59,22 @@ public class UsuarioController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 			
 		}
+	}
+	
+	@GetMapping("{id}/saldo")
+	public ResponseEntity obterSaldo(@PathVariable("id") Long id) {
+		
+		Optional<Usuario> usuario = service.buscarPorId(id);
+		if(!usuario.isPresent()) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			
+		}
+		
+
+		BigDecimal saldo = lancamentoService.obterSaldoPorTipoLancamentoEUsuario(id);
+		return  ResponseEntity.ok(saldo);
+
+		
 	}
 	
 	

@@ -1,5 +1,7 @@
 package br.com.afsilva.minhasfinancas.service;
 
+import java.util.Optional;
+
 import br.com.afsilva.minhasfinancas.model.entity.Usuario;
 
 public interface UsuarioService {
@@ -9,6 +11,8 @@ public interface UsuarioService {
 	Usuario salvarUsuario(Usuario usuario);
 	
 	void validarEmail(String email);
+	
+	Optional<Usuario> buscarPorId(Long id);
 	
 	
 	

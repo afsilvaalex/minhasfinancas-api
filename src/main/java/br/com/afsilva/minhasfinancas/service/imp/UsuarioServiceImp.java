@@ -16,6 +16,7 @@ import br.com.afsilva.minhasfinancas.service.UsuarioService;
 public class UsuarioServiceImp implements UsuarioService {
 	
 	private UsuarioRepository repository;
+
 	
 	
 	public UsuarioServiceImp(UsuarioRepository repository) {
@@ -55,6 +56,12 @@ public class UsuarioServiceImp implements UsuarioService {
 			
 		}
 		
+	}
+
+	@Override
+	public Optional<Usuario> buscarPorId(Long id) {
+		
+		return repository.findById(id);
 	}
 
 }
