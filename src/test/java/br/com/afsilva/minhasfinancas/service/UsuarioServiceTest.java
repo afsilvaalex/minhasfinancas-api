@@ -41,6 +41,7 @@ public class UsuarioServiceTest {
 	public void deveSalvarUmUsuario() {
 		// cenario
 		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
+		
 		Usuario usuario = new Usuario(1l, "Alexandre", "usuario@email", "password");
 
 		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
