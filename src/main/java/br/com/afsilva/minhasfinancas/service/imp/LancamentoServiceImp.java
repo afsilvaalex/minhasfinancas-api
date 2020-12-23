@@ -10,8 +10,8 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
 
+import br.com.afsilva.minhasfinancas.exception.ErroAutenticacao;
 import br.com.afsilva.minhasfinancas.exception.RegraNegocioException;
 import br.com.afsilva.minhasfinancas.model.entity.Lancamento;
 import br.com.afsilva.minhasfinancas.model.enums.StatusLancamento;
@@ -96,7 +96,7 @@ public class LancamentoServiceImp implements LancamentoService{
 		}
 		
 		if(lancamento.getUsuario() == null) {
-			throw new RegraNegocioException("Informe um Usuário válido. aqui");
+			throw new RegraNegocioException("Informe um Usuário válido.");
 		}
 		
 		if(lancamento.getValor() == null || lancamento.getValor().compareTo(BigDecimal.ZERO) < 1 ) {
@@ -104,7 +104,7 @@ public class LancamentoServiceImp implements LancamentoService{
 		}
 		
 		if(lancamento.getTipo() == null) {
-			throw new RegraNegocioException("Informe um Timo de lancamento.");
+			throw new RegraNegocioException("Informe um Tipo de lancamento.");
 		}
 	}
 

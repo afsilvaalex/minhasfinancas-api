@@ -42,7 +42,8 @@ public class UsuarioServiceTest {
 		// cenario
 		Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
 		
-		Usuario usuario = new Usuario(1l, "Alexandre", "usuario@email", "password");
+		Usuario usuario = criarUsuario();
+		usuario.setId(1l);
 
 		Mockito.when(repository.save(Mockito.any(Usuario.class))).thenReturn(usuario);
 
@@ -60,7 +61,8 @@ public class UsuarioServiceTest {
 	public void naoDeveSalvarUmUsuarioComEmailJaCadastrado() {
 
 		// Cenario
-		Usuario usuario = new Usuario(1l, "Alexandre", "usuario@email", "password");
+		Usuario usuario = criarUsuario();
+		usuario.setId(1l);
 		Mockito.doThrow(RegraNegocioException.class).when(service).validarEmail(usuario.getEmail());
 
 		// Acao
@@ -74,7 +76,7 @@ public class UsuarioServiceTest {
 	public void deveAutenticarUmUsuarioComSucesso() {
 
 		// Cenario
-		Usuario usuario = new Usuario("Alexandre", "usuario@email.com", "password");
+		Usuario usuario = criarUsuario();
 		Mockito.when(repository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
 
 		// Acao
@@ -85,6 +87,7 @@ public class UsuarioServiceTest {
 
 	}
 
+
 	@Test
 	public void deveLancarErroQuandoNaoEncontrarUsuarioCadastradoComOEmailInformado() {
 
@@ -93,7 +96,6 @@ public class UsuarioServiceTest {
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
 
 		// acao
-		Assertions.assertThrows(ErroAutenticacao.class, () -> service.autenticar(" ", " "));
 		RuntimeException runTimeException = Assertions.assertThrows(ErroAutenticacao.class,
 				() -> service.autenticar(" ", " "));
 
@@ -106,7 +108,7 @@ public class UsuarioServiceTest {
 
 		// Cenario
 
-		Usuario usuario = new Usuario("Alexandre", "usuario@email.com", "password");
+		Usuario usuario = criarUsuario();
 		Mockito.when(repository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(usuario));
 
 		// acao
@@ -136,5 +138,30 @@ public class UsuarioServiceTest {
 		// acao
 		Assertions.assertThrows(RegraNegocioException.class, () -> service.validarEmail("usuario@email.com"));
 
+	}
+	
+	@Test
+	public void deveObterUmUsuarioPorID() {
+		
+		//cenario
+		Long id = 1l;
+		Usuario usuario = criarUsuario();
+		usuario.setId(id);
+		
+		Mockito.when(repository.findById(id)).thenReturn(Optional.of(usuario));
+		
+		//execucao
+		Optional<Usuario> usuarioPorId = service.buscarPorId(id);
+		
+		//verificacao
+		
+		Assertions.assertTrue(usuarioPorId.isPresent());
+			
+	}
+	
+
+	private Usuario criarUsuario() {
+		Usuario usuario = new Usuario("Alexandre", "usuario@email.com", "password");
+		return usuario;
 	}
 }
